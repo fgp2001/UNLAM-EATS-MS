@@ -11,7 +11,7 @@
         "projectName": "GatewayApi",
         "projectPath": "C:\\Users\\ASUS\\Source\\Repos\\UNLAM-EATS-MS\\GatewayApi\\GatewayApi.csproj",
         "packagesPath": "C:\\Users\\ASUS\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ASUS\\Source\\Repos\\UNLAM-EATS-MS\\GatewayApi\\obj\\",
+        "outputPath": "C:\\Users\\ASUS\\source\\repos\\UNLAM-EATS-MS\\GatewayApi\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

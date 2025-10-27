@@ -1,0 +1,97 @@
+﻿using RepartosApi.Data.DTOs;
+using RepartosApi.Data.Entidades;
+using System.Net.Http;
+
+namespace RepartosApi.Services
+{
+
+    public interface IRepartoService
+    {
+        void AgregarReparto(Reparto reparto);
+        void EliminarReparto(int id);
+        List<Reparto> ObtenerRepartos();
+        Reparto? ObtenerRepartoPorId(int id);
+        void ActualizarReparto(Reparto reparto);
+
+        Task<Reparto?> AsignarRepartidorAsync(int idReparto, int idRepartidor);
+
+    }
+
+    public class RepartoService : IRepartoService
+    {
+        private readonly RepartosDbContext _context;
+        private readonly HttpClient _httpClient;
+
+        public RepartoService(RepartosDbContext context, HttpClient httpClient)
+        {
+            _context = context;
+            _httpClient = httpClient;
+
+        }
+
+        public void AgregarReparto(Reparto reparto)
+        {
+            reparto.FechaAsignacion = DateTime.Now;
+            _context.Repartos.Add(reparto);
+            _context.SaveChanges();
+        }
+        public void EliminarReparto(int id)
+        {
+            var reparto = _context.Repartos.Find(id);  
+            if(reparto!= null)
+            {
+                _context.Repartos.Remove(reparto);
+                _context.SaveChanges();
+            }
+        }
+
+        public void ActualizarReparto(Reparto reparto)
+        {
+            _context.Repartos.Update(reparto);
+            _context.SaveChanges();
+        }
+
+        public Reparto? ObtenerRepartoPorId(int id)
+        {
+            return _context.Repartos.Find(id);
+        }
+
+        public List<Reparto> ObtenerRepartos()
+        {
+           return _context.Repartos.ToList();  
+        }
+
+        public async Task<Reparto?> AsignarRepartidorAsync(int idReparto, int idRepartidor)
+        {
+           var reparto = _context.Repartos.Find(idReparto);
+            if (reparto == null) return null;
+
+            if(!await ValidarRepartidor(idRepartidor)) return null;
+
+            reparto.IdRepartidor = idRepartidor;
+            reparto.Estado = EstadoReparto.ASIGNADO;
+            reparto.FechaAsignacion = DateTime.Now;
+
+            _context.Repartos.Update(reparto);
+            _context.SaveChanges();
+
+            return reparto;
+
+        }
+
+        private async Task<bool> ValidarRepartidor(int idRepartidor)
+        {
+            try
+            {
+                //Peticion donde podamos obtener el usuario repartidor para poder luego asignar un reparto
+                var usuario = await _httpClient.GetFromJsonAsync<UsuarioDTO>($"http://localhost:5001/api/usuarios/{idRepartidor}");
+                return usuario != null && usuario.Rol == "REPARTIDOR";
+            }
+            catch
+            {
+                return false;
+            }
+        }
+    }
+}
+    
