@@ -15,6 +15,8 @@ namespace RepartosApi.Services
 
         Task<Reparto?> AsignarRepartidorAsync(int idReparto, int idRepartidor);
 
+        Task<Reparto?> CambiarEstadoAsync(int idReparto, EstadoReparto nuevoEstado);
+
     }
 
     public class RepartoService : IRepartoService
@@ -91,6 +93,26 @@ namespace RepartosApi.Services
             {
                 return false;
             }
+        }
+
+        public async Task<Reparto?> CambiarEstadoAsync(int idReparto, EstadoReparto nuevoEstado)
+        {
+
+            var reparto = await _context.Repartos.FindAsync(idReparto);
+            if (reparto == null) return null;
+
+            reparto.Estado = nuevoEstado;
+
+            if(nuevoEstado == EstadoReparto.ENTREGADO)
+            {
+                reparto.FechaEntrega = DateTime.Now;
+            }
+
+            _context.Repartos.Update(reparto);
+            await _context.SaveChangesAsync();
+
+            return reparto;
+
         }
     }
 }

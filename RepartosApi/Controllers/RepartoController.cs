@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RepartosApi.Data.DTOs;
 using RepartosApi.Data.Entidades;
 using RepartosApi.Services;
 
@@ -27,7 +28,7 @@ namespace RepartosApi.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById(int id)
         {
-            var reparto =_repartoService.ObtenerRepartoPorId(id);
+            var reparto = _repartoService.ObtenerRepartoPorId(id);
             if (reparto == null)
             {
                 return NotFound();
@@ -51,7 +52,7 @@ namespace RepartosApi.Controllers
             {
                 return BadRequest();
             }
-            _repartoService.ActualizarReparto(reparto); 
+            _repartoService.ActualizarReparto(reparto);
             return NoContent();
         }
 
@@ -74,5 +75,30 @@ namespace RepartosApi.Controllers
             }
             return Ok(reparto);
         }
+        
+        [HttpOptions("{id}/estado")]
+        public IActionResult Options()
+        {
+            Response.Headers.Add("Access-Control-Allow-Origin", "*");
+            Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type");
+            return Ok();
+        }
+
+        [HttpPut("{id}/estado")]
+        public async Task<IActionResult> CambiarEstado(int id, [FromBody] CambiarEstadoDTO body)
+        {
+            if (!Enum.TryParse<EstadoReparto>(body.NuevoEstado, out var nuevoEstado))
+            {
+                return BadRequest("Estado no válido");
+            }
+
+            var reparto = await _repartoService.CambiarEstadoAsync(id, nuevoEstado);
+            if (reparto == null)
+                return NotFound("Reparto no encontrado");
+
+            return Ok(reparto);
+        }
+
     }
 }

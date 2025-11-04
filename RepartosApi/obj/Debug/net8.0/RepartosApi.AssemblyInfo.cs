@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RepartosApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1e1aab31c8de90f0a922014da51ca548baff7c7c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+60d9b514068fc5f9d4f551f0c5510e5bb3d04396")]
 [assembly: System.Reflection.AssemblyProductAttribute("RepartosApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RepartosApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
