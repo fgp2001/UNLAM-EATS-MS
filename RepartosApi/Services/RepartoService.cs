@@ -65,10 +65,8 @@ namespace RepartosApi.Services
 
         public async Task<Reparto?> AsignarRepartidorAsync(int idReparto, int idRepartidor)
         {
-           var reparto = _context.Repartos.Find(idReparto);
+            var reparto = await _context.Repartos.FindAsync(idReparto);
             if (reparto == null) return null;
-
-            if(!await ValidarRepartidor(idRepartidor)) return null;
 
             reparto.IdRepartidor = idRepartidor;
             reparto.Estado = EstadoReparto.ASIGNADO;
@@ -79,20 +77,6 @@ namespace RepartosApi.Services
 
             return reparto;
 
-        }
-
-        private async Task<bool> ValidarRepartidor(int idRepartidor)
-        {
-            try
-            {
-                //Peticion donde podamos obtener el usuario repartidor para poder luego asignar un reparto
-                var usuario = await _httpClient.GetFromJsonAsync<UsuarioDTO>($"http://localhost:5001/api/usuarios/{idRepartidor}");
-                return usuario != null && usuario.Rol == "REPARTIDOR";
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         public async Task<Reparto?> CambiarEstadoAsync(int idReparto, EstadoReparto nuevoEstado)
